@@ -1,0 +1,74 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+<style type="text/css">
+a {
+	text-decoration: none;
+	color: black;
+}
+a:hover {
+	color: blue;
+}
+.twitter-item {
+	background-color: #E0FFFF;
+	z-index: 1;
+}
+#header1 {
+	display: inline;
+	clear: none;
+}
+#header2 {
+	display: inline;
+	clear: none;
+	margin-left: 44%;
+}
+.tweetAndSave {
+	display: flex;
+}
+.ui-draggable-dragging {
+	z-index: 2;
+}
+.tweets-container {
+	border: 1px solid blue;
+	padding: 3px;
+	background-color: #E0FFFF;
+}
+.save-container {
+	background-color: #E0FFFF;
+	border: 1px solid red;
+	padding: 3px;
+	flex: 1;
+}
+.tweetprofileLink {
+	display: inline-block;
+	margin-left: 6px;
+}
+img {
+	padding-right: 1px;
+}
+</style>
+</head>
+<body>
+	<h1>TweetSaver</h1>
+	<input id="query" placeholder="Ex. Obama" />
+		<select id="tweetCount">
+  		<option value="5" selected>5</option>
+  		<option value="10">10</option>
+  		<option value="15">15</option>
+  		<option value="20">20</option>
+	</select>
+	<input type="image" src="https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg" onclick="tweetLookUp()" width="20px" height="14px"/>
+	<input type="image" src="http://www.clipartkid.com/images/17/images-for-garbage-can-clipart-8zuv0M-clipart.png" onclick="clearSavedTweets()" width="20px" height="30px"/>
+	<br />
+	<br />
+	<h2 id="header1">Tweet Feed</h2>
+	<h2 id="header2">Saved Tweets</h2>
+	<div class="tweetAndSave">
+		<div class="tweets-container" style="width: 49.5%"></div>
+		<div class="save-container" style ="width: 50.5%"></div>
+	</div>
+</body>
+<script type="text/javascript" src="tweetSaver1.js"></script>
+<script type="text/javascript"></script>
+</html>
