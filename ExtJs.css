@@ -1,0 +1,22 @@
+#searchBox {
+    padding-left: 5px;
+    width: 49%;
+    float: left;
+}
+#searchButton {
+    position: absolute;
+    top: 50px;
+    right: 40px; 
+}
+.tweet-profile-link {
+    margin-left: 5px;
+}
+.tweet-pic {
+    float: left;
+}
+.twitter-text {
+    overflow-x: auto; 
+}
+.tweet-date {
+    float: right;
+}
