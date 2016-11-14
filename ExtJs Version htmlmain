@@ -1,0 +1,183 @@
+<html>
+<head>
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-neptune/resources/theme-neptune-all.css" rel="stylesheet">
+   <link rel="stylesheet" type="text/css" href="tweetStyle.css">
+   <link type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/packages/charts/classic/classic/resources/charts-all-debug.css">
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/ext-all.js"></script>
+   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/packages/charts/classic/charts-debug.js"></script>
+   <script type="text/javascript" src="tweetModels.js"></script>
+   <script type="text/javascript">
+
+   Ext.onReady(function() {
+
+     // Create search panel view
+     Ext.create('Ext.form.Panel', {
+         title: 'Search Twitter',
+         bodyPadding: 5,
+         width: 662,
+         layout: 'anchor',
+         defaults: {
+             anchor: '100%'
+         },
+         items: [{
+             xtype: 'searchfield',
+             fieldLabel: 'Search',
+             name: 'query'
+         }],
+         renderTo: 'searchBox'
+     });
+
+      // Creation of first grid store
+      var firstGridStore = Ext.create('Ext.data.Store', {
+         storeId: 'tweetStore',
+         model: 'Twitter'
+      });
+
+      // Creation of first grid view
+      var firstGrid = Ext.create('Ext.grid.Panel', {
+         viewConfig: {
+            plugins: {
+               ptype: 'gridviewdragdrop',
+               dragText: 'Drag to Save your Tweet',
+               dragGroup: 'firstGridDDGroup',
+               dropGroup: 'secondGridDDGroup'
+            },
+            listeners: {
+               drop: function(node, data, dropRec, dropPosition) {
+                  secondGridStore.remove({
+                     name: data.records[0].get('name'),
+                     createdAt: data.records[0].get('createdAt'),
+                     text: data.records[0].get('text'),
+                     profilePic: data.records[0].get('profilePic'),
+                     tweetHandle: data.records[0].get('tweetHandle')
+                  });
+                  secondGridStore.sync();
+               }
+            }
+         },
+         store: firstGridStore,
+         columns:
+            [{ 
+            text: "Drag right to Save",
+            xtype: 'templatecolumn',
+            tpl: '<div class="twitter-item">' +
+                   '<div class="tweet-image" width="20px">' +
+                       '<span>' +
+                           '<a href="https://twitter.com/{tweetHandle}" target="_blank">' +
+                               '<img class="tweet-pic" src="{profilePic}" width="42" height="42" alt="twitter-icon" />' +
+                           '</a>' +
+                       '</span>' +
+                           '<span class="tweet-profile-link">'+
+                               '<strong>' +
+                                   '<a href="https://twitter.com/{tweetHandle}" target="_blank">{name}</a>' +
+                               '</strong>' +
+                               '<br />' + 
+                               '<a href="https://twitter.com/{tweetHandle}" target="_blank">@{tweetHandle}</a>' +
+                           '</span>' +
+                           "<span class='tweet-date'>{createdAt:date('F j, Y, g:i a')}</span>" +
+                   '</div>' +
+                       '<div class="twitter-text">' +
+                           '<p>{text}</p>' +
+                       '</div>' +
+               '</div>',
+            flex: 1
+            }],
+         stripeRows: true,
+         title: 'Tweets'
+      });
+
+      // Creation of second grid store
+      var secondGridStore = Ext.create('Ext.data.Store', {
+         storeId: 'saveStore',
+         model: 'SaveFeed',
+         autoLoad: false
+      });
+
+      // Creation of second grid view
+      var secondGrid = Ext.create('Ext.grid.Panel', {
+         viewConfig: {
+            plugins: {
+               ptype: 'gridviewdragdrop',
+               dragText: 'Drag to Remove your tweet',
+               dragGroup: 'secondGridDDGroup',
+               dropGroup: 'firstGridDDGroup'
+            },
+            listeners: {
+               drop: function(node, data, dropRec, dropPosition) {
+                  secondGridStore.add({
+                     name: data.records[0].get('name'),
+                     createdAt: data.records[0].get('createdAt'),
+                     text: data.records[0].get('text'),
+                     profilePic: data.records[0].get('profilePic'),
+                     tweetHandle: data.records[0].get('tweetHandle')
+                  });
+                  secondGridStore.sync();
+               }
+            }
+         },
+         columns: 
+         [{ 
+         text: "Reload your saved tweets and drag left to delete",
+         xtype: 'templatecolumn',
+         tpl: '<div class="twitter-item">' +
+                '<div class="tweet-image" width="20px">' +
+                    '<span>' +
+                        '<a href="https://twitter.com/{tweetHandle}" target="_blank">' +
+                            '<img class="tweet-pic" src="{profilePic}" width="42" height="42" alt="twitter-icon" />' +
+                        '</a>' +
+                    '</span>' +
+                        '<span class="tweet-profile-link">'+
+                            '<strong>' +
+                                '<a href="https://twitter.com/{tweetHandle}" target="_blank">{name}</a>' +
+                            '</strong>' +
+                            '<br />' + 
+                            '<a href="https://twitter.com/{tweetHandle}" target="_blank">@{tweetHandle}</a>' +
+                        '</span>' +
+                        "<span class='tweet-date'>{createdAt:date('F j, Y, g:i a')}</span>" +
+                '</div>' +
+                    '<div class="twitter-text">' +
+                        '<p>{text}</p>' +
+                    '</div>' +
+            '</div>',
+         flex: 1
+         }],
+         stripeRows: true,
+         title: 'Saved Tweets'
+      });
+
+      // Creation of panel to display both grids
+      var displayPanel = Ext.create('Ext.Panel', {
+         width: 1333,
+         height: 750,
+         layout: {
+            type: 'hbox',
+            align: 'stretch',
+            padding: 5
+         },
+         renderTo: 'panel',
+         defaults: { flex : 1 }, 
+         items: [
+            firstGrid,
+            secondGrid
+         ]
+      });
+
+      // Creation of Reload button for saved tweets
+      var loadButton = Ext.create('Ext.Button', {
+         text: 'Load Saved Tweets',
+         renderTo: 'searchButton',
+         handler: function() {
+            var store = Ext.getStore("saveStore");
+            secondGrid.reconfigure(store);
+            store.load();
+         }
+      });
+   });
+   </script>
+</head>
+<body>
+<div id="searchBox"></div>
+<div id="searchButton"></div>
+<div id="panel"></div>
+</body>
+</html>
